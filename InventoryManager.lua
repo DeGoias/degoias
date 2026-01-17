@@ -35,3 +35,39 @@ function InventoryManager:UpdateCache(Player: Player)
 end
 
 return InventoryManager
+
+-------------------INVENTORY CLASS!!------------------ (ANOTHER MODULE)
+
+
+local CoinsClass = {}
+CoinsClass.__index = CoinsClass
+
+local CoinManager = require(script.Parent)
+
+function CoinsClass.new(plr: Player)
+	local self = setmetatable({}, CoinsClass)
+	CoinManager:VerifyCache(plr)
+	
+	self.Player = plr
+	self.Coins = CoinManager:GetCoin(self.Player)
+	self.Gems = CoinManager:GetGems(self.Player)
+	
+	return self
+end
+
+function CoinsClass:Add(Amount: number, Type: "Coins" | "Gems")
+	self[Type] += Amount
+	CoinManager:UpdateCache(self.Player)
+end
+
+function CoinsClass:Remove(Amount: number, Type: "Coins" | "Gems")
+	self[Type] -= Amount
+	CoinManager:UpdateCache(self.Player)
+end
+
+function CoinsClass:Reset(Type: "Coins" | "Gems")
+	self[Type] = 0
+	CoinManager:UpdateCache(self.Player)
+end
+
+return CoinsClass
